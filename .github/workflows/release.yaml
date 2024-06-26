@@ -69,7 +69,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20.8.0"
+          node-version: "20.15.0"
 
       # Dependencies
 
@@ -105,9 +105,8 @@ jobs:
       - name: Build frontend assets
         shell: bash
         run: |
-          npm install -g npm
-          node version.js "v${{ steps.normalise_version.outputs.version }}"
-          cd frontend && npm install
+          npm install -g pnpm
+          cd frontend && pnpm install
 
       # Build -- app variants
 
