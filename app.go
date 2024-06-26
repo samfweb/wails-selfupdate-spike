@@ -3,7 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"wails-selfupdate-spike/models"
 	"wails-selfupdate-spike/update"
+
+	"wails-selfupdate-spike/db"
 )
 
 // App struct
@@ -29,8 +32,38 @@ func (a *App) Greet(name string) string {
 
 func (a *App) CheckForUpdate() string {
 	updateExists, version := update.CheckForUpdate()
+	fmt.Println("updateExists:", updateExists)
+	fmt.Println("version:", version)
 	if updateExists {
 		return version
 	}
 	return ""
+}
+
+func (a *App) DoSelfUpdate() {
+	update.UpdateSelf(context.Background())
+}
+
+func (a *App) GetCurrentVersion() string {
+	return update.CURRENT_VERSION
+}
+
+func (a *App) TestDb() models.Connection {
+	db := db.InitDb()
+	fmt.Println("inserting into db...")
+	conn := models.Connection{
+		Name:           "Test Connection",
+		Protocol:       "mqtt",
+		Host:           "test.mosquitto.org",
+		Port:           1883,
+		IsProtoEnabled: true,
+		IsCertsEnabled: false,
+	}
+	db.Create(&conn)
+	fmt.Println("inserted conn with id of:", conn.ID)
+
+	var connection models.Connection
+	db.Model(&connection).Preload("Subscriptions").First(&connection)
+	fmt.Println("connection:", connection)
+	return connection
 }

@@ -6,6 +6,18 @@ export function CheckForUpdate() {
   return window['go']['main']['App']['CheckForUpdate']();
 }
 
+export function DoSelfUpdate() {
+  return window['go']['main']['App']['DoSelfUpdate']();
+}
+
+export function GetCurrentVersion() {
+  return window['go']['main']['App']['GetCurrentVersion']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
+}
+
+export function TestDb() {
+  return window['go']['main']['App']['TestDb']();
 }

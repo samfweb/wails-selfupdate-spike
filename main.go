@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"wails-selfupdate-spike/logging"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -14,6 +15,12 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	logging.NewLogger(logging.NewLoggerParams{
+		ResourceDir:          "/Users/sam/git/wails-selfupdate-spike/_logs",
+		EnableDebugLogging:   true,
+		EnableFileLogging:    true,
+		EnableConsoleLogging: true,
+	})
 
 	// Create application with options
 	err := wails.Run(&options.App{

@@ -1,27 +1,49 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import logo from "./assets/images/logo-universal.png";
-  import { Greet, CheckForUpdate } from "../wailsjs/go/main/App.js";
+  import {
+    Greet,
+    CheckForUpdate,
+    GetCurrentVersion,
+    DoSelfUpdate,
+    TestDb,
+  } from "../wailsjs/go/main/App.js";
 
   let resultText: string = "Please enter your name below 👇";
   let name: string;
+  let currentVersion = "";
+  let pendingVersion = "";
 
   function greet(): void {
     Greet(name).then((result) => (resultText = result));
   }
 
+  onMount(async () => {
+    currentVersion = await GetCurrentVersion();
+  });
+
   const checkVersion = async () => {
+    console.log("Checking for update...");
     const res = await CheckForUpdate();
     if (res !== "") {
-      alert("New version available. Please restart the app.\n" + res);
+      console.log("New version available: " + res);
+      pendingVersion = res;
     } else {
       console.log("No new version available");
     }
+  };
+
+  const testDb = async () => {
+    const res = await TestDb();
+    console.log(res);
   };
 </script>
 
 <main>
   <img alt="Wails logo" id="logo" src={logo} />
-  <div class="result" id="result">{resultText}</div>
+  <div class="result" id="result">Current version: {currentVersion}</div>
+  <div class="result" id="result">Available version: {pendingVersion}</div>
+
   <div class="input-box" id="input">
     <input
       autocomplete="off"
@@ -30,7 +52,9 @@
       id="name"
       type="text"
     />
-    <button class="btn" on:click={checkVersion}>Check version</button>
+    <button class="btn" on:click={checkVersion}>Check!!!!</button>
+    <button class="btn" on:click={DoSelfUpdate}>Update!!!!</button>
+    <button class="btn" on:click={testDb}>TestDB!!!!</button>
   </div>
 </main>
 
