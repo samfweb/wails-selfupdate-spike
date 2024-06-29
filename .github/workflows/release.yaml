@@ -37,7 +37,7 @@ jobs:
             os: windows-latest
             tag: windows-portable_amd64
     runs-on: ${{ matrix.build.os }}
-    name: Release October (${{ matrix.build.tag }})
+    name: Release wails-selfupdate-spike (${{ matrix.build.tag }})
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -147,8 +147,8 @@ jobs:
       #     New-Item -ItemType directory -Path certificate
       #     Set-Content -Path certificate\certificate.txt -Value '${{ secrets.WIN_SIGNING_CERT }}'
       #     certutil -decode certificate\certificate.txt certificate\certificate.pfx
-      #     echo "Signing October installer"
-      #     & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /tr http://ts.ssl.com /f certificate\certificate.pfx /p '${{ secrets.WIN_SIGNING_CERT_PASSWORD }}' October-${{ matrix.build.arch }}-installer.exe
+      #     echo "Signing wails-selfupdate-spike installer"
+      #     & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /tr http://ts.ssl.com /f certificate\certificate.pfx /p '${{ secrets.WIN_SIGNING_CERT_PASSWORD }}' wails-selfupdate-spike-${{ matrix.build.arch }}-installer.exe
       #   working-directory: ./build/bin
 
       # - name: Codesign Windows Portable
@@ -158,84 +158,84 @@ jobs:
       #     New-Item -ItemType directory -Path certificate
       #     Set-Content -Path certificate\certificate.txt -Value '${{ secrets.WIN_SIGNING_CERT }}'
       #     certutil -decode certificate\certificate.txt certificate\certificate.pfx
-      #     echo "Signing October installer"
-      #     & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /tr http://ts.ssl.com /f certificate\certificate.pfx /p '${{ secrets.WIN_SIGNING_CERT_PASSWORD }}' october.exe
+      #     echo "Signing wails-selfupdate-spike installer"
+      #     & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /tr http://ts.ssl.com /f certificate\certificate.pfx /p '${{ secrets.WIN_SIGNING_CERT_PASSWORD }}' wails-selfupdate-spike.exe
       #   working-directory: ./build/bin
 
       # Packaging
 
-      ## Linux
-      # - name: Package up deb file
-      #   if: runner.os == 'Linux'
-      #   shell: bash
-      #   run: |
-      #     mv build/bin/october build/linux/october_0.0.0_ARCH/usr/local/bin/
-      #     cd build/linux
-      #     sed -i 's/0.0.0/${{ steps.normalise_version.outputs.version }}/g' "october_0.0.0_ARCH/DEBIAN/control"
-      #     sed -i 's/ARCH/${{ matrix.build.arch }}/g' "october_0.0.0_ARCH/DEBIAN/control"
-      #     mv october_0.0.0_ARCH "october_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}"
-      #     dpkg-deb --build "october_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}"
+      # Linux
+      - name: Package up deb file
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          mv build/bin/wails-selfupdate-spike build/linux/wails-selfupdate-spike_0.0.0_ARCH/usr/local/bin/
+          cd build/linux
+          sed -i 's/0.0.0/${{ steps.normalise_version.outputs.version }}/g' "wails-selfupdate-spike_0.0.0_ARCH/DEBIAN/control"
+          sed -i 's/ARCH/${{ matrix.build.arch }}/g' "wails-selfupdate-spike_0.0.0_ARCH/DEBIAN/control"
+          mv wails-selfupdate-spike_0.0.0_ARCH "wails-selfupdate-spike_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}"
+          dpkg-deb --build "wails-selfupdate-spike_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}"
 
-      # - name: Compress deb
-      #   if: runner.os == 'Linux'
-      #   shell: bash
-      #   run: |
-      #     cd build/linux && zip -r october-${{ matrix.build.tag }}.zip october_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}.deb
-      #     mv october-${{ matrix.build.tag }}.zip ../bin
+      - name: Compress deb
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cd build/linux && zip -r wails-selfupdate-spike-${{ matrix.build.tag }}.zip wails-selfupdate-spike_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}.deb
+          mv wails-selfupdate-spike-${{ matrix.build.tag }}.zip ../bin
 
-      ## macOS
-      # - name: Compress macOS dmg
-      #   if: runner.os == 'macOS' && startsWith(github.ref, 'refs/tags/')
-      #   shell: bash
-      #   run: cd build/bin && zip -r october-${{ matrix.build.tag }}.zip October.dmg
+      # macOS
+      - name: Compress macOS dmg
+        if: runner.os == 'macOS' && startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: cd build/bin && zip -r wails-selfupdate-spike-${{ matrix.build.tag }}.zip wails-selfupdate-spike.dmg
 
-      # - name: Compress macOS app
-      #   if: ${{ runner.os == 'macOS' && !startsWith(github.ref, 'refs/tags/') }}
-      #   shell: bash
-      #   run: cd build/bin && zip -r october-${{ matrix.build.tag }}.zip October.app
+      - name: Compress macOS app
+        if: ${{ runner.os == 'macOS' && !startsWith(github.ref, 'refs/tags/') }}
+        shell: bash
+        run: cd build/bin && zip -r wails-selfupdate-spike-${{ matrix.build.tag }}.zip wails-selfupdate-spike.app
 
-      ## Windows
-      # - name: Remove old October binary
-      #   if: runner.os == 'Windows' && matrix.build.tag == 'windows_amd64'
-      #   shell: bash
-      #   run: rm October.exe
-      #   working-directory: ./build/bin
+      # Windows
+      - name: Remove old wails-selfupdate-spike binary
+        if: runner.os == 'Windows' && matrix.build.tag == 'windows_amd64'
+        shell: bash
+        run: rm wails-selfupdate-spike.exe
+        working-directory: ./build/bin
 
-      # - name: Compress binary (Win Normal)
-      #   if: runner.os == 'Windows' && matrix.build.tag == 'windows_amd64'
-      #   run: Compress-Archive October-${{ matrix.build.arch }}-installer.exe october-${{ matrix.build.tag }}.zip
-      #   working-directory: ./build/bin
+      - name: Compress binary (Win Normal)
+        if: runner.os == 'Windows' && matrix.build.tag == 'windows_amd64'
+        run: Compress-Archive wails-selfupdate-spike-${{ matrix.build.arch }}-installer.exe wails-selfupdate-spike-${{ matrix.build.tag }}.zip
+        working-directory: ./build/bin
 
-      # - name: Compress binary (Win Portable)
-      #   if: runner.os == 'Windows' && matrix.build.tag == 'windows-portable_amd64'
-      #   run: Compress-Archive october.exe october-${{ matrix.build.tag }}.zip
-      #   working-directory: ./build/bin
+      - name: Compress binary (Win Portable)
+        if: runner.os == 'Windows' && matrix.build.tag == 'windows-portable_amd64'
+        run: Compress-Archive wails-selfupdate-spike.exe wails-selfupdate-spike-${{ matrix.build.tag }}.zip
+        working-directory: ./build/bin
 
-      # - name: Upload build artifact
-      #   if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: october_pr${{ github.event.pull_request.number }}_${{ github.event.pull_request.head.sha }}_${{ matrix.build.tag }}.zip
-      #     path: |
-      #       ./build/bin
+      - name: Upload build artifact
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: wails-selfupdate-spike_pr${{ github.event.pull_request.number }}_${{ github.event.pull_request.head.sha }}_${{ matrix.build.tag }}.zip
+          path: |
+            ./build/bin
 
-      # - name: Get latest release from API
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   id: get_upload_url
-      #   shell: bash
-      #   run: |
-      #     curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/marcus-crane/october/releases" > /tmp/releases.json
-      #     url=$(jq -r '.[0].upload_url' /tmp/releases.json)
-      #     echo "url=$url" >> $GITHUB_OUTPUT
+      - name: Get latest release from API
+        if: startsWith(github.ref, 'refs/tags/')
+        id: get_upload_url
+        shell: bash
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/marcus-crane/wails-selfupdate-spike/releases" > /tmp/releases.json
+          url=$(jq -r '.[0].upload_url' /tmp/releases.json)
+          echo "url=$url" >> $GITHUB_OUTPUT
 
-      # - name: Upload artifact
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   uses: actions/upload-release-asset@v1.0.2
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     ARTIFACT_NAME: october_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.tag }}
-      #   with:
-      #     upload_url: ${{ steps.get_upload_url.outputs.url }}
-      #     asset_path: ./build/bin/october-${{ matrix.build.tag }}.zip
-      #     asset_name: ${{ env.ARTIFACT_NAME }}.zip
-      #     asset_content_type: application/zip
+      - name: Upload artifact
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACT_NAME: wails-selfupdate-spike_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.tag }}
+        with:
+          upload_url: ${{ steps.get_upload_url.outputs.url }}
+          asset_path: ./build/bin/wails-selfupdate-spike-${{ matrix.build.tag }}.zip
+          asset_name: ${{ env.ARTIFACT_NAME }}.zip
+          asset_content_type: application/zip
