@@ -15,7 +15,7 @@ func CheckForUpdate() (bool, string) {
 		return false, ""
 	}
 
-	v := semver.MustParse(version)
+	v := semver.MustParse(CurrentVersion)
 	if !found || latest.Version.LTE(v) {
 		slog.Info(fmt.Sprintf("current version %s is the latest", v))
 		return false, ""

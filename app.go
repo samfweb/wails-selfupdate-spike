@@ -45,7 +45,7 @@ func (a *App) DoSelfUpdate() {
 }
 
 func (a *App) GetCurrentVersion() string {
-	return update.CURRENT_VERSION
+	return update.CurrentVersion
 }
 
 func (a *App) TestDb() models.Connection {

@@ -19,13 +19,13 @@ const (
 	REPO = "samfweb/wails-selfupdate-spike"
 )
 
-var version string
+var CurrentVersion string
 
 func init() {
 	var ok bool
-	version, ok = os.LookupEnv("version")
+	CurrentVersion, ok = os.LookupEnv("version")
 	if !ok {
-		version = "0.0.0"
+		CurrentVersion = "0.0.0"
 	}
 }
 
@@ -38,7 +38,7 @@ func UpdateSelf(ctx context.Context) error {
 }
 
 func doSelfUpdate(ctx context.Context) error {
-	v := semver.MustParse(version)
+	v := semver.MustParse(CurrentVersion)
 	selfupdate.EnableLog()
 	latest, err := selfupdate.UpdateSelf(v, REPO)
 	if err != nil {
@@ -65,8 +65,8 @@ func doSelfUpdateMac(ctx context.Context) error {
 		slog.ErrorContext(ctx, "update server not found")
 		return nil
 	}
-	if latest.Version.Equals(semver.MustParse(version)) {
-		slog.InfoContext(ctx, fmt.Sprintf("current version %s is the latest", version))
+	if latest.Version.Equals(semver.MustParse(CurrentVersion)) {
+		slog.InfoContext(ctx, fmt.Sprintf("current version %s is the latest", CurrentVersion))
 		return nil
 	}
 	homeDir, _ := os.UserHomeDir()
