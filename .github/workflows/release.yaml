@@ -224,7 +224,7 @@ jobs:
         id: get_upload_url
         shell: bash
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/marcus-crane/wails-selfupdate-spike/releases" > /tmp/releases.json
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/samfweb/wails-selfupdate-spike/releases" > /tmp/releases.json
           url=$(jq -r '.[0].upload_url' /tmp/releases.json)
           echo "url=$url" >> $GITHUB_OUTPUT
 
