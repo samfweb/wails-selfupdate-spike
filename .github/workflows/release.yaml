@@ -169,6 +169,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
+          mkdir -p build/linux/wails-selfupdate-spike_0.0.0_ARCH/usr/local/bin/
           mv build/bin/wails-selfupdate-spike build/linux/wails-selfupdate-spike_0.0.0_ARCH/usr/local/bin/
           cd build/linux
           sed -i 's/0.0.0/${{ steps.normalise_version.outputs.version }}/g' "wails-selfupdate-spike_0.0.0_ARCH/DEBIAN/control"
