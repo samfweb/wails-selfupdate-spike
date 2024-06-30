@@ -169,13 +169,12 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          mkdir -p build/linux/wails-selfupdate-spike_0.0.0_ARCH/usr/local/bin/
-          mv build/bin/wails-selfupdate-spike build/linux/wails-selfupdate-spike_0.0.0_ARCH/usr/local/bin/
+          mkdir -p build/linux/wails-selfupdate-spike_ARCH/usr/local/bin/
+          mv build/bin/wails-selfupdate-spike build/linux/wails-selfupdate-spike_ARCH/usr/local/bin/
           cd build/linux
-          sed -i 's/0.0.0/${{ steps.normalise_version.outputs.version }}/g' "wails-selfupdate-spike_0.0.0_ARCH/DEBIAN/control"
-          sed -i 's/ARCH/${{ matrix.build.arch }}/g' "wails-selfupdate-spike_0.0.0_ARCH/DEBIAN/control"
-          mv wails-selfupdate-spike_0.0.0_ARCH "wails-selfupdate-spike_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}"
-          dpkg-deb --build "wails-selfupdate-spike_${{ steps.normalise_version.outputs.version }}_${{ matrix.build.arch }}"
+          sed -i 's/ARCH/${{ matrix.build.arch }}/g' "wails-selfupdate-spike_ARCH/DEBIAN/control"
+          mv wails-selfupdate-spike_ARCH "wails-selfupdate-spike_${{ matrix.build.arch }}"
+          dpkg-deb --build "wails-selfupdate-spike_${{ matrix.build.arch }}"
 
       - name: Compress deb
         if: runner.os == 'Linux'
